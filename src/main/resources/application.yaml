@@ -1,0 +1,8 @@
+server.port: 8088
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
+jwt-secret-key: temp
