@@ -28,7 +28,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
-    public AuthTokenFilter(){}
+    public AuthTokenFilter() {
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -49,7 +50,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         //end
 
 
-
         try {
             //get the jwt from header
             String jwt = parseJwt(request);
@@ -67,31 +67,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Some exception", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
+    public static final String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7, headerAuth.length());
         }
         return null;
     }
-
-
-    private List<String> excludeUrlPatterns = new ArrayList<String>(Arrays.asList("/swagger-ui.html",
-            "/swagger-uui.html", "/webjars/springfox-swagger-ui/springfox.css",
-            "/webjars/springfox-swagger-ui/swagger-ui-bundle.js", "/webjars/springfox-swagger-ui/swagger-ui.css",
-            "/webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js",
-            "/webjars/springfox-swagger-ui/springfox.js", "/swagger-resources/configuration/ui",
-            "/webjars/springfox-swagger-ui/favicon-32x32.png", "/swagger-resources/configuration/security",
-            "/swagger-resources", "/v2/api-docs",
-            "/webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-700.woff2",
-            "/webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-regular.woff2",
-            "/webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-700.woff2",
-            "/webjars/springfox-swagger-ui/favicon-16x16.png"));
 
 }
