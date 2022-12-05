@@ -45,7 +45,10 @@ public class CustomUserDetailsImp implements UserDetails {
 
     public static CustomUserDetailsImp build(UserSecurityDto userSecurityDto) {
         Set<GrantedAuthority> r = new HashSet<>();
-        r.add(new SimpleGrantedAuthority(userSecurityDto.getUserRole().name()));
+        userSecurityDto.getUserRoles().forEach(role -> {
+            r.add(new SimpleGrantedAuthority(role.getName()));
+        });
+
         return new CustomUserDetailsImp(
             userSecurityDto.getId(), userSecurityDto.getUsername(), userSecurityDto.getEmail(), userSecurityDto.getPassword(), userSecurityDto.getImageUrl(), r
         );

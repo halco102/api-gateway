@@ -24,7 +24,7 @@ public class JwtUserDetailesService implements UserDetailsService {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         if (getUserByUsername != null) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(getUserByUsername.getUserRole().name()));
+            getUserByUsername.getUserRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
 
             return CustomUserDetailsImp.build(getUserByUsername);
             //return new CustomUserDetailsImp(getUserByUsername.get().getUsername(), getUserByUsername.get().getEmail(), getUserByUsername.get().getPassword(), grantedAuthorities);
