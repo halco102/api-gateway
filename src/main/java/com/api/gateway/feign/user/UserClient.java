@@ -6,11 +6,9 @@ import com.api.gateway.dto.user.request.UserSignupRequest;
 import com.api.gateway.dto.user.response.PostedBy;
 import com.api.gateway.dto.user.response.UserSecurityDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "userClient", url = "http://localhost:8086/api/v1/user")
+@FeignClient(name = "userClient", url = "${USER_MICROSERVICE}")
 public interface UserClient {
 
     @GetMapping("/security/find-by-username")
