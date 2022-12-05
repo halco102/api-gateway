@@ -67,7 +67,7 @@ public class WebSecurityConfig{
                         "/*/swagger-resources/**",
                         "/*/v2/api-docs").permitAll()
                 .and()
-                //.userDetailsService(userDetailesService)
+                .userDetailsService(userDetailesService)
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
