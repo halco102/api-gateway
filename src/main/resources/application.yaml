@@ -5,4 +5,6 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
 
-jwt-secret-key: temp
+jwt-secret-key: ${JWT_SECRET_KEY}
+user-microservice: ${USER_MICROSERVICE}
+post-microservice: ${POST_MICROSERVICE}
