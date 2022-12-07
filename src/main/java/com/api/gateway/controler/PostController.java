@@ -24,7 +24,7 @@ public class PostController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<?> savePost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return new ResponseEntity<>(postClient.savePost(requestDto, AuthTokenFilter.parseJwt(request)), HttpStatus.OK);
+        return new ResponseEntity<>(postClient.savePost(requestDto, request.getHeader("Authorization")), HttpStatus.OK);
     }
 
     @GetMapping
@@ -45,8 +45,13 @@ public class PostController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<?> editPostById(@PathVariable Long id, @RequestBody EditPostRequest request, HttpServletRequest servletRequest) {
-        return new ResponseEntity<>(postClient.editPostById(id, request, AuthTokenFilter.parseJwt(servletRequest)), HttpStatus.OK);
+        return new ResponseEntity<>(postClient.editPostById(id, request, servletRequest.getHeader("Authorization")), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @PostMapping("/like-dislike")
+    public ResponseEntity<?> likeDislikePost(@PathVariable(name = "id") Long postId, @RequestParam boolean isLike, HttpServletRequest request) {
+        return new ResponseEntity<>(postClient.likeDislikePost(postId, isLike, request.getHeader("Authorization")), HttpStatus.OK);
+    }
 
 }

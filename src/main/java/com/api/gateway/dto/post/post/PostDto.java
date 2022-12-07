@@ -1,6 +1,7 @@
 package com.api.gateway.dto.post.post;
 
 import com.api.gateway.dto.post.category.CategoryDto;
+import com.api.gateway.dto.post.likedislike.LikeDislikeDto;
 import com.api.gateway.dto.user.response.PostedBy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,8 @@ public class PostDto {
     private PostedBy postedBy;
 
     private Set<CategoryDto> categoryDtos;
+
+    private Set<LikeDislikeDto> postLikedDislike;
 
     public PostDto(Long id, String title, String description, String imageUrl, PostedBy postedBy) {
         this.id = id;
