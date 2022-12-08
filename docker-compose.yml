@@ -61,6 +61,8 @@ services:
   udm:
     image: udm:latest
     restart: always
+    ports:
+      - "8086:8086"
     environment:
       DB_HOST: db-udm
       DB_PORT: 5431
@@ -98,6 +100,8 @@ services:
   post-microservice:
     image: post-microservice:latest
     restart: always
+    ports:
+      - "8087:8087"
     environment:
       DB_HOST: db-post
       DB_PORT: 5430
@@ -122,10 +126,13 @@ services:
     container_name: api-gateway-test
     environment:
       JWT_SECRET_KEY: ${jwt-secret-key}
-      USER_MICROSERVICE: udm
-      POST_MICROSERVICE: post-microservice
+      USER_MICROSERVICE: udm:8086/api/v1/user
+      POST_MICROSERVICE: post-microservice:8087/api/v1/post
     networks:
       - reddit_network
+    depends_on:
+      - udm
+      - post-microservice
   #END APIGATEWAY
 
 networks:
