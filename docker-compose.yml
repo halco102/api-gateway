@@ -1,0 +1,133 @@
+version: '3.9'
+
+services:
+
+  #kafka
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - reddit_network
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - reddit_network
+
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    ports:
+      - "8089:8075"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092 #internal
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - SERVER_PORT=8075
+    networks:
+      - reddit_network
+  #end kafka
+
+  #UDM
+
+  db-udm:
+    container_name: db-udm
+    image: postgres
+    restart: always
+    expose:
+      - "5431"
+    ports:
+      - "5431:5431"
+    command:
+      - -p 5431
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: halco1002
+      POSTGRES_DB: user-data-management
+    networks:
+      - reddit_network
+
+  udm:
+    image: udm:latest
+    restart: always
+    environment:
+      DB_HOST: db-udm
+      DB_PORT: 5431
+      DB_NAME: user-data-management
+      DB_USERNAME: root
+      DB_PASSWORD: halco1002
+      BOOTSTRAP_SERVER: kafka:9092
+    depends_on:
+      - db-udm
+    links:
+      - db-udm
+    networks:
+      - reddit_network
+
+  #END UDM
+
+  #POST MICROSERVICE
+
+  db-post:
+    image: postgres
+    restart: always
+    expose:
+      - "5430"
+    ports:
+      - "5430:5430"
+    command:
+      - -p 5430
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: halco1002
+      POSTGRES_DB: post-db
+    networks:
+      - reddit_network
+
+  post-microservice:
+    image: post-microservice:latest
+    restart: always
+    environment:
+      DB_HOST: db-post
+      DB_PORT: 5430
+      DB_NAME: post-db
+      DB_USERNAME: root
+      DB_PASSWORD: halco1002
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME}
+      CLOUDINARY_SECRET_KEY: ${CLOUDINARY_SECRET_KEY}
+      jwt-secret-key: ${jwt-secret-key}
+      BOOTSTRAP_SERVER: kafka:9092
+    depends_on:
+      - db-post
+    networks:
+      - reddit_network
+
+  #END POST MICROSERVICE
+
+  #APIGATEWAY
+  api-gateway:
+    build: .
+    container_name: api-gateway-test
+    environment:
+      JWT_SECRET_KEY: ${jwt-secret-key}
+      USER_MICROSERVICE: udm
+      POST_MICROSERVICE: post-microservice
+    networks:
+      - reddit_network
+  #END APIGATEWAY
+
+networks:
+  reddit_network:
+    external: true
