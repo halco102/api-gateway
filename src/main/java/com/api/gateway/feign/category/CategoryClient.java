@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "categoryClient", url = "${POST_MICROSERVICE}")
+import java.util.Set;
+
+@FeignClient(name = "categoryClient", url = "${POST_MICROSERVICE}/category")
 public interface CategoryClient {
 
     @PostMapping
@@ -19,5 +21,8 @@ public interface CategoryClient {
 
     @GetMapping("/name/{name}")
     CategoryDto getCategoryByName(@PathVariable String name);
+
+    @GetMapping("")
+    Set<CategoryDto> getAllCategories();
 
 }

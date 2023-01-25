@@ -11,34 +11,13 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class PostDto {
+public class PostDto extends BasePost {
 
-    private Long id;
+    private Long numberOfComments;
 
-    private String title;
-
-    private String description;
-
-    private String imageUrl;
-
-/*    private LocalDateTime createdAt;
-
-    private LocalDateTime editedAt;*/
-
-    private boolean allowComment;
-
-    private PostedBy postedBy;
-
-    private Set<CategoryDto> categoryDtos;
-
-    private Set<LikeDislikeDto> postLikedDislike;
-
-    public PostDto(Long id, String title, String description, String imageUrl, PostedBy postedBy) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.postedBy = postedBy;
+    public PostDto(Long id, String title, String description, String imageUrl, boolean allowComment, PostedBy postedBy, Set<CategoryDto> categoryDtos, Set<LikeDislikeDto> postLikedDislike, Long numberOfComments) {
+        super(id, title, description, imageUrl, allowComment, postedBy, categoryDtos, postLikedDislike);
+        this.numberOfComments = numberOfComments;
     }
+
 }

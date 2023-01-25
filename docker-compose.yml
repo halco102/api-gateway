@@ -114,6 +114,7 @@ services:
       CLOUDINARY_SECRET_KEY: ${CLOUDINARY_SECRET_KEY}
       jwt-secret-key: ${jwt-secret-key}
       BOOTSTRAP_SERVER: kafka:9092
+
     depends_on:
       - db-post
     networks:

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "postClient", url = "${POST_MICROSERVICE}")
+@FeignClient(name = "postClient", url = "${POST_MICROSERVICE}/post")
 public interface PostClient {
 
     @PostMapping(value = "", consumes = {  MediaType.APPLICATION_JSON_VALUE,
@@ -33,4 +33,8 @@ public interface PostClient {
 
     @PostMapping("/like-dislike/{id}")
     PostDto likeDislikePost(@PathVariable(name = "id") Long postId, @RequestParam boolean isLike, @RequestHeader("Authorization") String jwt);
+
+    @DeleteMapping("/{id}")
+    void deletePostById(@PathVariable Long id, @RequestHeader("Authorization") String jwt);
+
 }

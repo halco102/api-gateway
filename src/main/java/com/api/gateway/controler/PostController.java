@@ -1,7 +1,10 @@
 package com.api.gateway.controler;
 
+import com.api.gateway.dto.post.post.SinglePagePostDto;
 import com.api.gateway.dto.post.post.request.EditPostRequest;
 import com.api.gateway.dto.post.post.request.PostRequestDto;
+import com.api.gateway.exception.NotFoundException;
+import com.api.gateway.feign.comment.CommentClient;
 import com.api.gateway.feign.post.PostClient;
 import com.api.gateway.security.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ public class PostController {
 
     private final PostClient postClient;
 
+    private final CommentClient commentClient;
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<?> savePost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
@@ -29,17 +34,38 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<?> getAllPosts() {
-        return new ResponseEntity<>(postClient.getAllPosts(), HttpStatus.OK);
+        var fetchposts = postClient.getAllPosts();
+
+        fetchposts.forEach(e -> {
+            e.setNumberOfComments(commentClient.numberOfComments(e.getId()));
+        });
+
+        return new ResponseEntity<>(fetchposts, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        return new ResponseEntity<>(postClient.getPostById(id), HttpStatus.OK);
+        var post = postClient.getPostById(id);
+        var comments = commentClient.latestCommentsFromPost(id);
+
+        if (post == null || comments == null)
+            throw new NotFoundException("Post or comments are null");
+
+        SinglePagePostDto singlePagePostDto = new SinglePagePostDto(post.getId(), post.getTitle(), post.getDescription(), post.getImageUrl(),
+                post.isAllowComment(), post.getPostedBy(), post.getCategoryDtos(), post.getPostLikedDislike(), comments);
+
+        return new ResponseEntity<>(singlePagePostDto, HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getAllUserPosts(@PathVariable Long id) {
-        return new ResponseEntity<>(postClient.getAllUsersPost(id), HttpStatus.OK);
+        var fetchposts = postClient.getAllUsersPost(id);
+
+        fetchposts.forEach(e -> {
+            e.setNumberOfComments(commentClient.numberOfComments(e.getId()));
+        });
+
+        return new ResponseEntity<>(fetchposts, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -49,9 +75,16 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    @PostMapping("/like-dislike")
+    @PostMapping("/like-dislike/{id}")
     public ResponseEntity<?> likeDislikePost(@PathVariable(name = "id") Long postId, @RequestParam boolean isLike, HttpServletRequest request) {
         return new ResponseEntity<>(postClient.likeDislikePost(postId, isLike, request.getHeader("Authorization")), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePostById(@PathVariable Long id, HttpServletRequest request) {
+        postClient.deletePostById(id, request.getHeader("Authorization"));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -1,20 +1,16 @@
-package com.api.gateway.dto.user.response;
+package com.api.gateway.dto.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class CommentPostDto {
 
     private Long id;
 
-    private String username;
-
-    private String imageUrl;
+    private String title;
 
 }

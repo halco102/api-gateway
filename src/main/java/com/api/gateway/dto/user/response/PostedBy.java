@@ -7,20 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostedBy {
-
-    private Long id;
+public class PostedBy extends UserDto {
 
     private String email;
 
-    private String username;
-
-    private String imageUrl;
-
-    public PostedBy(Long id, String email, String username) {
-        this.id = id;
+    public PostedBy(Long id, String username, String imageUrl, String email) {
+        super(id, username, imageUrl);
         this.email = email;
-        this.username = username;
     }
+
 
 }

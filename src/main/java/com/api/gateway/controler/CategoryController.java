@@ -31,4 +31,8 @@ public class CategoryController {
         return new ResponseEntity<>(categoryClient.getCategoryById(id), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllCategories() {
+        return new ResponseEntity<>(categoryClient.getAllCategories(), HttpStatus.OK);
+    }
 }

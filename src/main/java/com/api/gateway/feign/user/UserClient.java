@@ -8,6 +8,8 @@ import com.api.gateway.dto.user.response.UserSecurityDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @FeignClient(name = "userClient", url = "${USER_MICROSERVICE}")
 public interface UserClient {
 
@@ -26,5 +28,12 @@ public interface UserClient {
     @DeleteMapping("/{id}")
     void deleteUserById(@PathVariable Long id);
 
+    @GetMapping("/{id}/following")
+    Set<PostedBy> getFollowingFromUserById(@PathVariable Long userId);
 
+    @GetMapping("/{id}/followers")
+    Set<PostedBy> getFollowersFromUserById(@PathVariable Long userId);
+
+    @PostMapping("/follow-user/{id}")
+    Set<PostedBy> followUnfollowUser(@PathVariable Long followingId, @RequestHeader("Authorization") String jwt);
 }
