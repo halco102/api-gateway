@@ -1,10 +1,13 @@
 package com.api.gateway.feign.post;
 
+import com.api.gateway.dto.post.likedislike.LikeDislikeDto;
 import com.api.gateway.dto.post.post.PostDto;
 import com.api.gateway.dto.post.post.request.EditPostRequest;
 import com.api.gateway.dto.post.post.request.PostRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +39,8 @@ public interface PostClient {
 
     @DeleteMapping("/{id}")
     void deletePostById(@PathVariable Long id, @RequestHeader("Authorization") String jwt);
+
+    @GetMapping("/like-dislike/user/{id}")
+    List<LikeDislikeDto> getAllPostLikeDislikeFromUser(@PathVariable("id") Long userId);
 
 }
