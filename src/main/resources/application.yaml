@@ -5,6 +5,12 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
 
+  #Multipartfile
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
 jwt-secret-key: ${JWT_SECRET_KEY}
 user-microservice: ${USER_MICROSERVICE}
 post-microservice: ${POST_MICROSERVICE}

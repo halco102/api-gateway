@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -26,8 +27,8 @@ public abstract class BasePost {
 
     private PostedBy postedBy;
 
-    private Set<CategoryDto> categoryDtos;
+    private Set<CategoryDto> categoryDtos = new HashSet<>();
 
-    private Set<LikeDislikeDto> postLikedDislike;
+    private Set<LikeDislikeDto> postLikedDislike = new HashSet<>();
 
 }

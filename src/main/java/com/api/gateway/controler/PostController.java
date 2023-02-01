@@ -2,17 +2,16 @@ package com.api.gateway.controler;
 
 import com.api.gateway.dto.post.post.SinglePagePostDto;
 import com.api.gateway.dto.post.post.request.EditPostRequest;
-import com.api.gateway.dto.post.post.request.PostRequestDto;
 import com.api.gateway.exception.NotFoundException;
 import com.api.gateway.feign.comment.CommentClient;
 import com.api.gateway.feign.post.PostClient;
-import com.api.gateway.security.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,8 +27,15 @@ public class PostController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-    public ResponseEntity<?> savePost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return new ResponseEntity<>(postClient.savePost(requestDto, request.getHeader("Authorization")), HttpStatus.OK);
+    public ResponseEntity<?> savePost(@RequestPart("requestDto") String requestDto,
+                                      @RequestPart(value = "file", required = false) MultipartFile multipartFile,
+                                      HttpServletRequest request) {
+
+        var savePost = postClient.savePost(requestDto, multipartFile, request.getHeader("Authorization"));
+        if (savePost.isAllowComment())
+            savePost.setNumberOfComments(0L);
+
+        return new ResponseEntity<>(savePost, HttpStatus.OK);
     }
 
     @GetMapping
@@ -85,6 +91,11 @@ public class PostController {
     public ResponseEntity<?> deletePostById(@PathVariable Long id, HttpServletRequest request) {
         postClient.deletePostById(id, request.getHeader("Authorization"));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{name}")
+    public ResponseEntity<?> getAllPostsByCategoryName(@PathVariable String name) {
+        return new ResponseEntity<>(postClient.getAllPostsByCategoryName(name), HttpStatus.OK);
     }
 
 }
