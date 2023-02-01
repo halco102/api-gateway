@@ -1,6 +1,5 @@
-package com.api.gateway.dto.comment;
+package com.api.gateway.dto.comment.request;
 
-import com.api.gateway.dto.user.response.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,13 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeDislikeComment {
+public class LikeDislikeCommentRequest {
+    private String id;
 
-    private String commentId;
-
-    private UserDto userDto;
-
-    @JsonProperty("likeOrDislike")
     private boolean isLike;
 
 }

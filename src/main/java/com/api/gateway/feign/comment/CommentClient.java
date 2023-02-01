@@ -3,9 +3,8 @@ package com.api.gateway.feign.comment;
 import com.api.gateway.dto.comment.CommentDto;
 import com.api.gateway.dto.comment.LikeDislikeComment;
 import com.api.gateway.dto.comment.request.CommentRequest;
+import com.api.gateway.dto.comment.request.LikeDislikeCommentRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,5 +27,8 @@ public interface CommentClient {
 
     @GetMapping("/like-dislike/user/{id}")
     List<LikeDislikeComment> getAllCommentsWhereUserLikedOrDisliked(@PathVariable("id") Long userId);
+
+    @PostMapping("/like-dislike")
+    LikeDislikeComment likeDislikeComment(@RequestBody LikeDislikeCommentRequest request, @RequestHeader("Authorization") String jwt);
 
 }
