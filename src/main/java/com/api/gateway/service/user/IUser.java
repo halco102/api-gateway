@@ -25,4 +25,7 @@ public interface IUser {
 
     Set<Follow> followUnfollowUserById(Long followingId, HttpServletRequest request);
 
+    UserProfile getUserProfileByJwt(String jwt);
+
+    boolean validateJwt(String jwt);
 }

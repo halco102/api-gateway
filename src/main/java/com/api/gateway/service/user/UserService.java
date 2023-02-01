@@ -66,6 +66,12 @@ public class UserService implements IUser{
     }
 
     @Override
+    public UserProfile getUserProfileByJwt(String jwt) {
+        var temp = jwtTokenUtil.getUserIdFromJwt(jwt);
+        return getUserProfileById(temp);
+    }
+
+    @Override
     public UserLoginResponse login(UserLoginRequest request) {
         var user = userClient.loginUser(request);
         UserLoginResponse response = new UserLoginResponse();
@@ -99,5 +105,10 @@ public class UserService implements IUser{
     @Override
     public Set<Follow> followUnfollowUserById(Long followingId, HttpServletRequest request) {
         return userClient.followUnfollowUser(followingId, request.getHeader("Authorization"));
+    }
+
+    @Override
+    public boolean validateJwt(String jwt) {
+        return jwtTokenUtil.validateToken(jwt);
     }
 }

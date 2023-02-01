@@ -50,6 +50,11 @@ public class JwtTokenUtil implements Serializable {
         return claims.get("username").toString();
     }
 
+    public Long getUserIdFromJwt(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Long.parseLong(claims.get("sub").toString());
+    }
+
 
     public boolean validateToken(String token) {
         try {

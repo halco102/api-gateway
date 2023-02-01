@@ -3,6 +3,7 @@ package com.api.gateway.controler;
 import com.api.gateway.dto.user.request.EditUserRequest;
 import com.api.gateway.dto.user.request.UserLoginRequest;
 import com.api.gateway.dto.user.request.UserSignupRequest;
+import com.api.gateway.security.AuthTokenFilter;
 import com.api.gateway.service.user.IUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,16 @@ public class UserController {
     @GetMapping("/profile/{id}")
     public ResponseEntity<?> getUserProfileById(@PathVariable Long id) {
         return new ResponseEntity<>(iUser.getUserProfileById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getCurrentlyLoggedUserProfile(HttpServletRequest request) {
+        return new ResponseEntity<>(iUser.getUserProfileByJwt(AuthTokenFilter.parseJwt(request)) , HttpStatus.OK);
+    }
+
+    @GetMapping("/jwt/valid")
+    public ResponseEntity<?> validateJWT(@RequestParam String jwt) {
+        return new ResponseEntity<>(iUser.validateJwt(jwt), HttpStatus.OK);
     }
 
 }
