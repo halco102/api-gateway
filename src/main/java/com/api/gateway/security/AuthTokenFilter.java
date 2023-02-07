@@ -68,7 +68,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             }
         } catch (Exception e) {
-            log.error("Some exception", e.getMessage());
+            log.error("Services are down!", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
