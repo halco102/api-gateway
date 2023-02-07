@@ -28,7 +28,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/signup")
     public ResponseEntity<?> createAccount(@RequestBody UserSignupRequest request) {
         iUser.createAccount(request);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +28,11 @@ public class CommentController {
     @PostMapping("/like-dislike")
     public ResponseEntity<?> likeDislikeComment(@RequestBody LikeDislikeCommentRequest request, HttpServletRequest servletRequest) {
         return new ResponseEntity<>(commentClient.likeDislikeComment(request, servletRequest.getHeader("Authorization")), HttpStatus.OK);
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<?> fetchAllCommentsByPostId(@PathVariable Long postId) {
+        return new ResponseEntity<>(commentClient.latestCommentsFromPost(postId), HttpStatus.OK);
     }
 
 }

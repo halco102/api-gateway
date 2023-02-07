@@ -13,8 +13,8 @@ import java.util.List;
 public class ReplyDto extends BaseComment{
     private String parentId;
 
-    public ReplyDto(String id, CommentPostDto postDto, UserDto userDto, String comment, List<LikeDislikeComment> likeDislikeComments, LocalDateTime createdAt, String parentId) {
-        super(id, postDto, userDto, comment, likeDislikeComments, createdAt);
+    public ReplyDto(String id, CommentPostDto postDto, UserDto userDto, String comment, List<LikeDislikeComment> likeDislikeComments, LocalDateTime createdAt, String parentId, String mention) {
+        super(id, postDto, userDto, comment, likeDislikeComments, createdAt, mention);
         this.parentId = parentId;
     }
 

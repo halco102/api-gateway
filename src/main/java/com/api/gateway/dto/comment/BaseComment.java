@@ -25,5 +25,7 @@ public abstract class BaseComment {
 
     private LocalDateTime createdAt;
 
+    private String mention;
+
 
 }

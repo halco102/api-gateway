@@ -29,6 +29,6 @@ public interface CommentClient {
     List<LikeDislikeComment> getAllCommentsWhereUserLikedOrDisliked(@PathVariable("id") Long userId);
 
     @PostMapping("/like-dislike")
-    LikeDislikeComment likeDislikeComment(@RequestBody LikeDislikeCommentRequest request, @RequestHeader("Authorization") String jwt);
+    CommentDto likeDislikeComment(@RequestBody LikeDislikeCommentRequest request, @RequestHeader("Authorization") String jwt);
 
 }
